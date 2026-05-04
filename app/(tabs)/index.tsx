@@ -1,79 +1,180 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {StyleSheet, TouchableOpacity } from 'react-native';
+import * as Speech from 'expo-speech';
+import { VideoView, useVideoPlayer   } from 'expo-video';
+import { useState } from 'react';
 
-import { HelloWave } from '@/components/hello-wave';
+import { Audiowave } from '@/components/audio-wave';
+import { StopAudiowave } from '@/components/stop-audio-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
 export default function HomeScreen() {
+  const title = 'Activity 1: Parachute Drop Challenge';
+  const ovreview = 'Overview. Students design, build, and test a parachute for a small toy to reduce its landing speed and impact force. Teams iterate their designs under time and material constraints, aiming to achieve the slowest and safest landing within a target area.';
+  const equipments = 'Equipments. 1. Mobile phone with STEMM Lab app. 2. Small toy (example army toy soldier). 3. Table or elevated surface. 4. Paper or plastic. 5. String. 6. Scissors. 7. Tape.';
+  const diagram = 'Diagram. Toy attached to parachute. Drop height marked. Target landing zone shown on floor.';
+  const titleSpeak = () => {
+    Speech.speak(title, {
+      rate: 1.0,
+      pitch: 1.0,
+    });
+  };
+
+  const overviewSpeak = () => {
+    Speech.speak(ovreview, {
+      rate: 1.0,
+      pitch: 1.0,
+    });
+  };
+
+  const equipmentSpeak = () => {
+    Speech.speak(equipments, {
+      rate: 1.0,
+      pitch: 1.0,
+    });
+  };
+
+  const diagramSpeak = () => {
+    Speech.speak(diagram, {
+      rate: 1.0,
+      pitch: 1.0,
+    });
+  };
+
+  const stopSpeak = () => {
+    Speech.stop();
+  };
+
+  const equipmentList = [
+  'Mobile phone with STEMM Lab app',
+  'Small toy (e.g. army toy soldier)',
+  'Table or elevated surface',
+  'Paper or plastic',
+  'String',
+  'Scissors',
+  'Tape',
+  ];
+
+  const diagramList = [
+    'Toy attached to parachute',
+    'Drop height marked',
+    'Target landing zone shown on floor'
+  ];
+
+  const player = useVideoPlayer(
+  { uri: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+    (player) => {
+      player.loop = true;
+      player.volume = 1;
+    }
+  );
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+
+  const togglePlay = () => {
+  if (isPlaying) {
+    player.pause();
+  } else {
+    player.play();
+  }
+  setIsPlaying(!isPlaying);
+  };
+
+  const toggleMute = () => {
+    player.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  const increaseVolume = () => {
+    const newVolume = Math.min(volume + 0.1, 1);
+    player.volume = newVolume;
+    setVolume(newVolume);
+  };
+
+  const decreaseVolume = () => {
+    const newVolume = Math.max(volume - 0.1, 0);
+    player.volume = newVolume;
+    setVolume(newVolume);
+  };
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: '#D8D8D8', dark: '#737373' }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={require('@/assets/images/parachute-logo.png')}
+          style={styles.parachuteLogo}
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">Activity 1: Parachute Drop Challenge</ThemedText>
+        <TouchableOpacity onPress={titleSpeak}>
+          <ThemedText><Audiowave /></ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={stopSpeak}>
+          <ThemedText><StopAudiowave /></ThemedText>
+        </TouchableOpacity>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">Overview <TouchableOpacity onPress={overviewSpeak}> <Audiowave /> </TouchableOpacity> <TouchableOpacity onPress={stopSpeak}> <StopAudiowave /> </TouchableOpacity></ThemedText>
         <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+          Students design, build, and test a parachute for a small toy to reduce its landing speed and
+          impact force. Teams iterate their designs under time and material constraints, aiming to achieve
+          the slowest and safest landing within a target area. 
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+        <ThemedText type="subtitle">Equipments <TouchableOpacity onPress={equipmentSpeak}> <Audiowave /> </TouchableOpacity> <TouchableOpacity onPress={stopSpeak}> <StopAudiowave /> </TouchableOpacity></ThemedText>
+        {equipmentList.map((item, index) => (
+          <ThemedText key={index}>
+            {index + 1}. {item}
+          </ThemedText>
+        ))}
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Diagram <TouchableOpacity onPress={diagramSpeak}> <Audiowave /> </TouchableOpacity> <TouchableOpacity onPress={stopSpeak}> <StopAudiowave /> </TouchableOpacity></ThemedText>
+            {diagramList.map((item, index) => (
+          <ThemedText key={index}>
+            • {item}
+          </ThemedText>
+          ))}
+      </ThemedView>
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">Demo Video</ThemedText>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+          <VideoView
+            player={player}
+            style={{ width: 375, height: 200 }}
+            contentFit="contain"
+            nativeControls={false}
+          />
+          <ThemedView style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
+            <TouchableOpacity onPress={togglePlay}>
+              <ThemedText>
+                {isPlaying ? '⏸ Pause' : '▶️ Play'}
+              </ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={toggleMute}>
+              <ThemedText>
+                {isMuted ? '🔊 Unmute' : '🔇 Mute'}
+              </ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={increaseVolume}>
+              <ThemedText>🔼 Volume+</ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={decreaseVolume}>
+              <ThemedText>🔽 Volume-</ThemedText>
+            </TouchableOpacity>
+
+          </ThemedView>
+        </ThemedView>
     </ParallaxScrollView>
   );
 }
@@ -88,8 +189,8 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
+  parachuteLogo: {
+    height: 250,
     width: 290,
     bottom: 0,
     left: 0,
